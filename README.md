@@ -69,7 +69,7 @@ Before you begin, ensure you have:
 
 ```bash
 # Clone the repository
-git clone [https://github.com/yourusername/mongodb-rag-demo.git](https://github.com/gibranDe/RAGDemo.git)
+git clone https://github.com/gibranDe/RAGDemo.git
 cd RAGDemo
 
 # Create and activate virtual environment
