@@ -26,4 +26,4 @@ BATCH_SIZE = 32
 # ────────────────── INGESTION CONFIG ──────────────────
 PDF_DIR = "../pdfs"
 SITEMAP_INDEX = "https://web.talana.com/sitemap.xml"
-MAX_URLS = 50 #set up to none if you want to procees all. Be memory and time sensitive
+MAX_URLS = 10 #set up to none if you want to procees all. Be memory and time sensitive
