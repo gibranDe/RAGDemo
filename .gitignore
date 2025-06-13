@@ -1,0 +1,45 @@
+# Environment variables
+.env
+*.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+pdfs/
+*.pdf
+node_modules/
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Database dumps
+*.sql
+*.db
+*.sqlite
