@@ -6,10 +6,34 @@ from pymongo import MongoClient, UpdateOne
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from voyageai import Client as VoyageClient
 from PyPDF2 import PdfReader
+from pathlib import Path
+import sys
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
 from config.config import (
-    MONGODB_URI, VOYAGE_API_KEY, USERNAME, DB_NAME, COLL_NAME,
-    CHUNK_SIZE, CHUNK_OVERLAP, BATCH_SIZE, EMBED_MODEL, PDF_DIR
+    MONGODB_URI,
+    VOYAGE_API_KEY,
+    USERNAME,
+    DB_NAME,
+    COLL_NAME,
+    PDF_DIR,
+    CHUNK_SIZE,
+    CHUNK_OVERLAP,
+    BATCH_SIZE,
+    EMBED_MODEL
 )
+
+# # ─── CONFIG ───
+# MONGODB_URI = os.getenv("MONGODB_URI", "your-mongodb-uri")
+# VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "your-voyage-api-key")
+# USERNAME = os.getenv("USERNAME", "anon")
+# DB_NAME = "RAGDemo"
+# COLL_NAME = "data"
+# PDF_DIR = "./pdfs"
+# CHUNK_SIZE = 512
+# CHUNK_OVERLAP = 64
+# BATCH_SIZE = 32
+# MODEL = "voyage-3.5-lite"
 
 print("[INFO] Starting PDF ingestion script")
 
@@ -49,7 +73,7 @@ def chunk_text(text: str, source_name: str) -> List[dict]:
     print(f"[INFO] Split {len(chunks)} chunks from {source_name}")
     return [{"text": chunk, "source_pdf": source_name, "chunk_idx": idx} for idx, chunk in enumerate(chunks)]
 
-def embed_batch(texts: List[str], model: str = MODEL) -> List[List[float]]:
+def embed_batch(texts: List[str], model: str = EMBED_MODEL) -> List[List[float]]:
     try:
         print(f"[INFO] Embedding batch of {len(texts)} texts")
         texts = [t[:24000] for t in texts]

@@ -1,4 +1,3 @@
-import os
 import time
 import uuid
 import requests
@@ -8,19 +7,35 @@ from pymongo import MongoClient, UpdateOne
 from bs4 import BeautifulSoup
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from voyageai import Client as VoyageClient
-
-# ─── CONFIG ───
-MONGODB_URI = os.getenv("MONGODB_URI", "your-mongodb-uri")
-VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "your-voyage-api-key")
-USERNAME = os.getenv("USERNAME", "anon")
-DB_NAME = "RAGDemo"
-COLL_NAME = "data"
-SITEMAP_INDEX = "https://web.talana.com/sitemap.xml"
-CHUNK_SIZE = 512
-CHUNK_OVERLAP = 64
-BATCH_SIZE = 32
-MAX_URLS = None  # Set to None to process all URLs
-MODEL = "voyage-3.5-lite"
+from pathlib import Path
+import sys
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+from config.config import (
+    MONGODB_URI,
+    VOYAGE_API_KEY,
+    USERNAME,
+    DB_NAME,
+    COLL_NAME,
+    SITEMAP_INDEX,
+    CHUNK_SIZE,
+    CHUNK_OVERLAP,
+    BATCH_SIZE,
+    EMBED_MODEL,
+    MAX_URLS
+)
+# # ─── CONFIG ───
+# MONGODB_URI = os.getenv("MONGODB_URI", "your-mongodb-uri")
+# VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "your-voyage-api-key")
+# USERNAME = os.getenv("USERNAME", "anon")
+# DB_NAME = "RAGDemo"
+# COLL_NAME = "data"
+# SITEMAP_INDEX = "https://web.talana.com/sitemap.xml"
+# CHUNK_SIZE = 512
+# CHUNK_OVERLAP = 64
+# BATCH_SIZE = 32
+# MAX_URLS = None  # Set to None to process all URLs
+# MODEL = "voyage-3.5-lite"
 
 print("[INFO] Starting streaming web ingestion script")
 
@@ -201,7 +216,7 @@ def batch_generator(items: Iterator, batch_size: int) -> Generator[List, None, N
         yield batch
 
 #Embed streaming
-def embed_batch_with_retry(texts: List[str], model: str = MODEL, max_retries: int = 3) -> List[List[float]]:
+def embed_batch_with_retry(texts: List[str], model: str = EMBED_MODEL, max_retries: int = 3) -> List[List[float]]:
     for attempt in range(max_retries):
         try:
             print(f"[INFO] Embedding batch of {len(texts)} texts (attempt {attempt + 1})")
@@ -334,9 +349,9 @@ def main(interactive: bool = True):
     
     if interactive:
         print(f"\n[INFO] This will process {len(all_urls)} URLs using streaming approach")
-        resp = input("¿Deseas continuar con la ingesta streaming? [y/N]: ").strip().lower()
+        resp = input("Do you want to continue ingest? [y/N]: ").strip().lower()
         if resp != "y":
-            print("[INFO] Ingesta cancelada por el usuario.")
+            print("[INFO] Ingestion canceled.")
             return
     
     # Ejecutar procesamiento streaming
