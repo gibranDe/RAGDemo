@@ -6,6 +6,15 @@
 
 ---
 
+## Overview
+
+![UI](reference/example.png)
+
+## Answer
+
+![UI](reference/answer.png)
+
+
 ## Features
 
 | Vector Search | AI Models | Analytics | Interface |
@@ -67,24 +76,30 @@ Before you begin, ensure you have:
 
 ### Step 1: Clone & Setup
 
+#### Clone the repository
+
 ```bash
-# Clone the repository
 git clone https://github.com/gibranDe/RAGDemo.git
 cd RAGDemo
+```
 
-# Create and activate virtual environment
+#### Create and activate virtual environment
+```bash
 python -m venv venv
 
 # On macOS/Linux:
 source venv/bin/activate
+```
+```bash
 # On Windows:
 venv\Scripts\activate
-
-# Install dependencies
+```
+#### Install dependencies
+```bash
 pip install -r requirements.txt
 ```
 
-### Step 2: Configure Environment
+#### Configure Environment
 
 ```bash
 # Copy environment template
@@ -100,9 +115,18 @@ OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 USERNAME=your_username
 ```
 
-### Step 3: Setup MongoDB Vector Index
+## Step 2:Configuration Options
 
-The application will automatically create the required vector search index, or create it manually:
+You can modify these settings in `config/config.py`:
+
+- **Database**: `DB_NAME`, `COLL_NAME`, `INDEX_NAME`
+- **Models**: `EMBED_MODEL`, `LLM_MODEL`
+- **Processing**: `CHUNK_SIZE`, `CHUNK_OVERLAP`, `BATCH_SIZE`
+- **Data Sources**: `PDF_DIR`, `SITEMAP_INDEX`, `MAX_URLS`
+
+> **Note**: On first run, the application will automatically create the MongoDB database, collection, and vector search index if they do not already exist.  
+
+> **Note**:Ensure that the `EMBED_MODEL` and `LLM_MODEL` specified in your configuration are compatible with the embedding and generation functions in use — mismatched models may cause runtime errors or unexpected behavior.
 
 <details>
 <summary>Manual Index Configuration</summary>
@@ -126,15 +150,62 @@ The application will automatically create the required vector search index, or c
 ```
 </details>
 
-### Step 4: Launch Application
+## Step 3: Adding Your Documents
+The RAG system can ingest documents from two sources:
 
+#### PDF Documents
+- Place your PDF files in the `pdfs/` directory (or modify `PDF_DIR` in config)
+- Supports multiple PDFs automatically
+- Files are chunked and embedded for semantic search
+
+#### Web Content (Sitemap)
+- Configure `SITEMAP_INDEX` in `config/config.py` with your target sitemap URL
+- Set `MAX_URLS` to limit processing (use `None` for all URLs)
+- Default example processes Talana's website sitemap
+
+#### Usage
+<details>
+<summary>PDF Documents</summary>
+
+```bash
+python ingest_pdf.py
+```
+</details>
+
+<details>
+<summary>Web Pages</summary>
+
+```bash
+python ingest_sitemap.py
+```
+</details>
+
+---
+
+
+
+### Step 4: Launch Application
 ```bash
 python app.py
 ```
 
 **Success!** Visit [http://localhost:5000](http://localhost:5000)
+![UI](reference/chatBox.png)
 
----
+
+## Usage Guide
+
+### Basic Operation
+
+1. **Ask Questions**: Enter any question about your indexed documents
+2. **Adjust Parameters**:
+   - **Documents to Rerank**: Number of final documents (1-50)
+   - **Vector Search Limit**: MongoDB candidates to examine (50-500)
+3. **View Results**:
+   - Performance metrics with timing breakdown
+   - Before/after reranking comparison
+   - AI-generated answer with source citations
+
 
 ## Project Structure
 
@@ -170,38 +241,6 @@ mongodb-rag-demo/
 
 ---
 
-## Usage Guide
-
-### Basic Operation
-
-1. **Ask Questions**: Enter any question about your indexed documents
-2. **Adjust Parameters**:
-   - **Documents to Rerank**: Number of final documents (1-50)
-   - **Vector Search Limit**: MongoDB candidates to examine (50-500)
-3. **View Results**:
-   - Performance metrics with timing breakdown
-   - Before/after reranking comparison
-   - AI-generated answer with source citations
-
-### Adding Your Documents
-
-<details>
-<summary>PDF Documents</summary>
-
-```bash
-# Place PDFs in ./pdfs/ folder, then run:
-python ingest_pdf.py
-```
-</details>
-
-<details>
-<summary>Web Pages</summary>
-
-```bash
-# Configure sitemap URL in script, then run:
-python ingest_sitemap.py
-```
-</details>
 
 ---
 
@@ -243,7 +282,6 @@ python ingest_sitemap.py
 - **Structured Formatting**: Headers, lists, and emphasis
 - **Source Citations**: Every claim backed by document references
 - **Multiple Languages**: Responds in the query language
-- **Rich Formatting**: Code blocks, blockquotes, and tables
 
 ---
 
@@ -260,6 +298,10 @@ graph TD
     E --> F[GPT-4 Generation]
     F --> G[Formatted Response]
 ```
+
+### RAG Pipeline reference diagram
+
+![UI](reference/referenceDiagram.png)
 
 1. **Query Processing** → User input validation and preprocessing
 2. **Embedding Generation** → VoyageAI converts query to vector
