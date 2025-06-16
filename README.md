@@ -217,7 +217,7 @@ mongodb-rag-demo/
 ├── .env.example            # Environment template
 │
 ├── config/
-│   └── settings.py            # Configuration management
+│   └── config.py            # Configuration management
 │
 ├── core/
 │   ├── database.py            # MongoDB connection
@@ -232,8 +232,7 @@ mongodb-rag-demo/
 ├── templates/
 │   └── index.html             # Main UI template
 │
-├── static/                 # CSS, JS, images
-│
+├──reference                # images
 └── ingestion/              # Data ingestion scripts
     ├── ingest_pdf.py          # PDF processing
     └── ingest_sitemap.py      # Web scraping

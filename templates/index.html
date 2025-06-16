@@ -126,6 +126,11 @@
       outline: none;
     }
 
+    .form-control::placeholder, textarea::placeholder {
+      color: var(--text-secondary);
+      opacity: 1;
+    }
+
     .range-container {
       display: flex;
       align-items: center;
@@ -613,7 +618,7 @@
             Documents to Rerank
           </label>
           <div class="range-container">
-            <span class="text-muted">1</span>
+            <span class="--text-primary">1</span>
             <input 
               type="range" 
               class="form-range" 
@@ -623,7 +628,7 @@
               min="1" 
               max="50"
               oninput="document.getElementById('topKValue').textContent = this.value">
-            <span class="text-muted">50</span>
+            <span class="--text-primary">50</span>
             <span id="topKValue" class="range-value">{{ top_k or 10 }}</span>
           </div>
         </div>
@@ -634,7 +639,7 @@
           MongoDB Vector Search Limit
         </label>
         <div class="range-container">
-          <span class="text-muted">50</span>
+          <span class="--text-primary">50</span>
           <input 
             type="range" 
             class="form-range" 
@@ -645,10 +650,10 @@
             max="500"
             step="25"
             oninput="document.getElementById('annLimitValue').textContent = this.value">
-          <span class="text-muted">500</span>
+          <span class="--text-primary">500</span>
           <span id="annLimitValue" class="range-value">{{ ann_limit or 100 }}</span>
         </div>
-        <small class="text-muted d-block mt-1">
+        <small class="--text-primary d-block mt-1">
           <i class="fas fa-info-circle"></i>
           Controls MongoDB's numCandidates parameter
         </small>
