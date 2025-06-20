@@ -24,18 +24,6 @@ from config.config import (
     EMBED_MODEL,
     MAX_URLS
 )
-# # ─── CONFIG ───
-# MONGODB_URI = os.getenv("MONGODB_URI", "your-mongodb-uri")
-# VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "your-voyage-api-key")
-# USERNAME = os.getenv("USERNAME", "anon")
-# DB_NAME = "RAGDemo"
-# COLL_NAME = "data"
-# SITEMAP_INDEX = "https://web.talana.com/sitemap.xml"
-# CHUNK_SIZE = 512
-# CHUNK_OVERLAP = 64
-# BATCH_SIZE = 32
-# MAX_URLS = None  # Set to None to process all URLs
-# MODEL = "voyage-3.5-lite"
 
 print("[INFO] Starting streaming web ingestion script")
 
@@ -353,10 +341,9 @@ def main(interactive: bool = True):
         if resp != "y":
             print("[INFO] Ingestion canceled.")
             return
-    
     # Ejecutar procesamiento streaming
     start_time = time.time()
-    mongo_coll.delete_many({})
+    #mongo_coll.delete_many({})
     print(f"[INFO] Delete Collection, collection count: {mongo_coll.count_documents({})}")
     results = main_streaming_web_approach(all_urls)
     end_time = time.time()
