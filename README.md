@@ -115,19 +115,39 @@ OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 USERNAME=your_username
 ```
 
-## Step 2:Configuration Options
+## Step 2: Configuration Options
 
-You can modify these settings in `config/config.py`:
+### Core Configuration
+Customize your RAG system by modifying settings in `config/config.py`:
 
-- **Database**: `DB_NAME`, `COLL_NAME`, `INDEX_NAME`
-- **Models**: `EMBED_MODEL`, `LLM_MODEL`
-- **Processing**: `CHUNK_SIZE`, `CHUNK_OVERLAP`, `BATCH_SIZE`
-- **Data Sources**: `PDF_DIR`, `SITEMAP_INDEX`, `MAX_URLS`
+**Database Configuration**
+- `DB_NAME`: MongoDB database name (default: "demoDB")
+- `COLL_NAME`: Collection name for storing documents (default: "data")
+- `INDEX_NAME`: Vector search index name (default: "ragIndex")
 
-> **Note**: On first run, the application will automatically create the MongoDB database, collection, and vector search index if they do not already exist.  
+**Document Processing**
+- `CHUNK_SIZE`: Maximum tokens per document chunk (default: 800)
+- `CHUNK_OVERLAP`: Token overlap between chunks (default: 100)
+- `BATCH_SIZE`: Documents processed per batch (default: 64)
 
-> **Note**:Ensure that the `EMBED_MODEL` and `LLM_MODEL` specified in your configuration are compatible with the embedding and generation functions in use — mismatched models may cause runtime errors or unexpected behavior.
+**Data Sources**
+- `PDF_DIR`: Directory path containing PDF files to process
+- `SITEMAP_INDEX`: URL of sitemap index for web scraping
+- `MAX_URLS`: Maximum URLs to process from sitemap (default: None)
 
+### Response Customization
+Fine-tune the AI assistant's behavior by editing the `RAG_PROMPT` in `rag/generator.py`. The current prompt is optimized for:
+- Multi-language support with source attribution
+- Structured responses with executive summaries
+- Comprehensive source citation requirements
+
+### Important Notes
+
+> **⚠️ First Run Setup**: The application automatically creates the MongoDB database, collection, and vector search index on first execution if they don't exist.
+
+> **⚠️ Model Compatibility**: Ensure `EMBED_MODEL` and `LLM_MODEL` are compatible with your AI provider's API. Model mismatches can cause runtime errors or degraded performance.
+
+> **💡 Performance Tip**: Adjust `CHUNK_SIZE` and `BATCH_SIZE` based on your system resources and document complexity. Larger chunks retain more context but use more memory.
 <details>
 <summary>Manual Index Configuration</summary>
 
