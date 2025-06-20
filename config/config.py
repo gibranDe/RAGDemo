@@ -9,7 +9,7 @@ VOYAGE_API_KEY = os.getenv("VOYAGE_API_KEY", "YOUR_VOYAGE_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "YOUR_OPENAI_KEY")
 
 # ────────────────── DATABASE CONFIG ──────────────────
-DB_NAME = "RAGDemo"
+DB_NAME = "demoDB"
 COLL_NAME = "data"
 INDEX_NAME = "ragIndex"
 
@@ -19,11 +19,11 @@ LLM_MODEL = "gpt-4o"
 
 # ────────────────── APP CONFIG ──────────────────
 USERNAME = os.getenv("USERNAME", "anon")
-CHUNK_SIZE = 512
-CHUNK_OVERLAP = 64
-BATCH_SIZE = 32
+CHUNK_SIZE = 800
+CHUNK_OVERLAP = 100
+BATCH_SIZE = 64
 
 # ────────────────── INGESTION CONFIG ──────────────────
 PDF_DIR = "../pdfs"
-SITEMAP_INDEX = "https://web.talana.com/sitemap.xml"
-MAX_URLS = 10 #set up to none if you want to procees all. Be memory and time sensitive
+SITEMAP_INDEX = "https://www.yoururl.com/sitemap.xml"
+MAX_URLS = None #set up to none if you want to procees all. Be memory and time sensitive

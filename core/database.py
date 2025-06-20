@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pymongo.errors import OperationFailure
 from pathlib import Path
+from pymongo.operations import SearchIndexModel
 import sys
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
@@ -45,21 +46,21 @@ class DatabaseManager:
                 return
             
             # Create index
-            self.collection.create_search_index({
-                "name": INDEX_NAME,
-                "definition": {
-                    "mappings": {
-                        "dynamic": True,
-                        "fields": {
-                            "embedding": {
-                                "type": "knnVector",
-                                "dimensions": 1024,
-                                "similarity": "cosine"
-                            }
-                        }
+            search_index_model = SearchIndexModel(
+            definition={
+                "fields": [
+                    {
+                        "type": "vector",
+                        "path": "embedding",
+                        "numDimensions": 1024,
+                        "similarity": "cosine"
                     }
-                }
-            })
+                ]
+            },
+            name=INDEX_NAME,
+            type="vectorSearch"
+        )
+            result = self.collection.create_search_index(model=search_index_model)
             print(f"[INFO] Vector search index '{INDEX_NAME}' created successfully with dynamic mapping.")
             
         except OperationFailure as e:
@@ -105,17 +106,35 @@ class DatabaseManager:
     
     def get_collection_stats(self):
         try:
+
+            total_documents = self.collection.count_documents({})
+            pdf_documents = self.collection.count_documents({"type": "PDF"})
+            url_documents = self.collection.count_documents({"type": "URL"})
+            
+
+            collection_stats = self.collection.database.command("collStats", COLL_NAME)
+            
             return {
-                "total_documents": self.collection.count_documents({}),
-                "pdf_documents": self.collection.count_documents({"type": "PDF"}),
-                "url_documents": self.collection.count_documents({"type": "URL"}),
+                "total_documents": total_documents,
+                "pdf_documents": pdf_documents,
+                "url_documents": url_documents,
                 "database_name": DB_NAME,
                 "collection_name": COLL_NAME,
-                "index_name": INDEX_NAME
+                "index_name": INDEX_NAME,
+                "storage_size": collection_stats.get("storageSize", 0),
+                "total_index_size": collection_stats.get("totalIndexSize", 0),
+                "avg_obj_size": collection_stats.get("avgObjSize", 0)
             }
         except Exception as e:
             print(f"[ERROR] Failed to get collection stats: {e}")
-            return {}
+            return {
+                "total_documents": 0,
+                "pdf_documents": 0,
+                "url_documents": 0,
+                "database_name": "Error",
+                "collection_name": "Error", 
+                "index_name": "Error"
+            }
     
     def close_connection(self):
         """Cerrar la conexión a MongoDB"""

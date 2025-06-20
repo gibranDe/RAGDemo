@@ -189,6 +189,73 @@
       color: var(--mongo-forest);
     }
 
+    /* DATABASE STATS - NUEVA SECCIÓN */
+    .db-stats {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: rgba(0, 237, 100, 0.05);
+      border: 1px solid var(--mongo-green-dark);
+      border-radius: 12px;
+    }
+
+    .db-stats-header {
+      color: var(--mongo-green);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .db-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+
+    .db-stat-item {
+      background: var(--card-bg);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .db-stat-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--mongo-green);
+      font-family: 'Courier New', monospace;
+    }
+
+    .db-stat-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.25rem;
+    }
+
+    .db-status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .db-status.online {
+      background: var(--mongo-green);
+      color: var(--mongo-forest);
+    }
+
+    .db-status.offline {
+      background: #ef4444;
+      color: white;
+    }
+
     /* Main Content */
     .main-content {
       display: flex;
@@ -307,6 +374,8 @@
       padding: 1rem 1.5rem;
       border-bottom: 1px solid var(--border-color);
       transition: all 0.3s ease;
+      min-height: 60px;
+      overflow: hidden;
     }
 
     .doc-item:hover {
@@ -328,14 +397,18 @@
       justify-content: center;
       font-weight: 700;
       font-size: 0.85rem;
-      flex-shrink: 0;
+      flex: 0 0 28px;
     }
 
     .doc-content {
-      flex: 1;
       font-size: 0.9rem;
       color: var(--text-primary);
       line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1 1 0;
+      min-width: 0;
     }
 
     .doc-score {
@@ -345,10 +418,85 @@
       border-radius: 12px;
       font-size: 0.75rem;
       font-weight: 600;
-      flex-shrink: 0;
+      flex: 0 0 auto;
+      white-space: nowrap;
+      text-align: center;
+      min-width: 60px;
     }
 
-    /* AI Answer - MEJOR ORGANIZADA */
+    /* TOOLTIP MEJORADO */
+    .doc-content-with-tooltip {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dotted var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .doc-content-with-tooltip:hover {
+      border-bottom-color: var(--mongo-green);
+      color: var(--mongo-green);
+    }
+
+    .doc-content-with-tooltip:hover::before {
+      content: attr(title);
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--mongo-forest);
+      color: var(--mongo-green);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      white-space: normal;
+      word-break: break-all;
+      max-width: 400px;
+      z-index: 1000;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--mongo-green);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    .doc-content-with-tooltip:hover::after {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 1px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid var(--mongo-green);
+      z-index: 1001;
+    }
+
+    /* TOOLTIP RESPONSIVE */
+    @media (max-width: 768px) {
+      .doc-content-with-tooltip:hover::before {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 90vw;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      
+      .doc-content-with-tooltip:hover::after {
+        display: none;
+      }
+    }
+
+    /* INDICADOR VISUAL DE QUE HAY TOOLTIP */
+    .doc-content-with-tooltip::after {
+      content: ' 🔍';
+      font-size: 0.7rem;
+      opacity: 0.5;
+      margin-left: 4px;
+    }
+
+    /* AI Answer */
     .answer-container {
       background: var(--card-bg);
       border-radius: 16px;
@@ -383,7 +531,7 @@
       font-size: 1rem;
     }
 
-    /* AI Content Formatting - MEJORADO */
+    /* AI Content Formatting */
     .answer-content h1 {
       color: var(--mongo-green);
       font-size: 1.6rem;
@@ -422,38 +570,38 @@
       font-style: italic;
     }
 
-    /* Lists - MEJOR DISEÑO */
+    /* Lists */
     .answer-content ol {
-    counter-reset: list-counter;
-    padding-left: 0;
-    margin: 1.5rem 0;
+      counter-reset: list-counter;
+      padding-left: 0;
+      margin: 1.5rem 0;
     }
 
-  .answer-content ol li {
-    display: list-item;
-    list-style: none;
-    margin-bottom: 1rem;
-    padding: 1rem 1rem 1rem 3rem;
-    background: rgba(0, 237, 100, 0.05);
-    border-left: 3px solid var(--mongo-green);
-    border-radius: 0 8px 8px 0;
-    position: relative;
-    counter-increment: list-counter;
+    .answer-content ol li {
+      display: list-item;
+      list-style: none;
+      margin-bottom: 1rem;
+      padding: 1rem 1rem 1rem 3rem;
+      background: rgba(0, 237, 100, 0.05);
+      border-left: 3px solid var(--mongo-green);
+      border-radius: 0 8px 8px 0;
+      position: relative;
+      counter-increment: list-counter;
     }
 
     .answer-content ol li::before {
-    content: '→';
-    color: var(--mongo-green);
-    font-weight: 700;
-    font-size: 1.1rem;
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    width: auto;
-    height: auto;
-    border-radius: 0;
+      content: '→';
+      color: var(--mongo-green);
+      font-weight: 700;
+      font-size: 1.1rem;
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      width: auto;
+      height: auto;
+      border-radius: 0;
     }
 
     .answer-content ul {
@@ -582,6 +730,10 @@
         grid-template-columns: 1fr;
         gap: 1rem;
       }
+      
+      .db-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
@@ -634,36 +786,79 @@
         </div>
 
         <div class="form-section">
-        <label for="ann_limit" class="form-label">
-          <i class="fas fa-database"></i>
-          MongoDB Vector Search Limit
-        </label>
-        <div class="range-container">
-          <span class="--text-primary">50</span>
-          <input 
-            type="range" 
-            class="form-range" 
-            name="ann_limit" 
-            id="ann_limit"
-            value="{{ ann_limit or 100 }}" 
-            min="50" 
-            max="500"
-            step="25"
-            oninput="document.getElementById('annLimitValue').textContent = this.value">
-          <span class="--text-primary">500</span>
-          <span id="annLimitValue" class="range-value">{{ ann_limit or 100 }}</span>
+          <label for="ann_limit" class="form-label">
+            <i class="fas fa-database"></i>
+            MongoDB Vector Search Limit
+          </label>
+          <div class="range-container">
+            <span class="--text-primary">50</span>
+            <input 
+              type="range" 
+              class="form-range" 
+              name="ann_limit" 
+              id="ann_limit"
+              value="{{ ann_limit or 100 }}" 
+              min="50" 
+              max="500"
+              step="25"
+              oninput="document.getElementById('annLimitValue').textContent = this.value">
+            <span class="--text-primary">500</span>
+            <span id="annLimitValue" class="range-value">{{ ann_limit or 100 }}</span>
+          </div>
+          <small class="--text-primary d-block mt-1">
+            <i class="fas fa-info-circle"></i>
+            Controls MongoDB's numCandidates parameter
+          </small>
         </div>
-        <small class="--text-primary d-block mt-1">
-          <i class="fas fa-info-circle"></i>
-          Controls MongoDB's numCandidates parameter
-        </small>
-      </div>
 
         <button type="submit" class="search-btn">
           <i class="fas fa-rocket"></i>
           Search & Analyze
         </button>
       </form>
+
+      <!-- DATABASE STATS - NUEVA SECCIÓN -->
+      <div class="db-stats" id="dbStats">
+        <div class="db-stats-header">
+          <i class="fas fa-chart-bar"></i>
+          Database Status
+          <span class="db-status online" id="dbStatus">Online</span>
+        </div>
+        <div class="db-stats-grid">
+          <div class="db-stat-item">
+            <div class="db-stat-value" id="totalDocs">-</div>
+            <div class="db-stat-label">Total Docs</div>
+          </div>
+          <div class="db-stat-item">
+            <div class="db-stat-value" id="pdfDocs">-</div>
+            <div class="db-stat-label">PDF Docs</div>
+          </div>
+          <div class="db-stat-item">
+            <div class="db-stat-value" id="urlDocs">-</div>
+            <div class="db-stat-label">URL Docs</div>
+          </div>
+          <div class="db-stat-item">
+            <div class="db-stat-value" id="storageSize">-</div>
+            <div class="db-stat-label">Storage</div>
+          </div>
+          <div class="db-stat-item">
+            <div class="db-stat-value" id="indexSize">-</div>
+            <div class="db-stat-label">Index Size</div>
+          </div>
+          <div class="db-stat-item">
+            <div class="db-stat-value" id="avgSize">-</div>
+            <div class="db-stat-label">Avg Size</div>
+          </div>
+        </div>
+        <!-- Información adicional en texto -->
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+          <div style="font-size: 0.8rem; color: var(--text-secondary); text-align: center;">
+            <div><strong>DB:</strong> <span id="dbNameText">-</span></div>
+            <div><strong>Collection:</strong> <span id="collectionName">-</span></div>
+            <div><strong>Index:</strong> <span id="indexName">-</span></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Main Content -->
@@ -696,11 +891,11 @@
             <div class="metric-item">
               <div class="metric-value">${{ "%.4f"|format(performance_metrics.estimated_cost) }}</div>
               <div class="metric-label">Cost</div>
-          </div>
-          <div class="metric-item">
-            <div class="metric-value">{{ performance_metrics.vector_search_limit }}</div>
-            <div class="metric-label">Search Limit</div>
-          </div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{ performance_metrics.vector_search_limit }}</div>
+              <div class="metric-label">Search Limit</div>
+            </div>
           </div>
         </div>
       </div>
@@ -719,9 +914,12 @@
           <ul class="document-list">
             {% for line in before.split('\n') %}
               {% set parts = line.split(' | ') %}
+              {% set full_text = parts[0].split('. ', 1)|last %}
               <li class="doc-item">
                 <div class="doc-rank">{{ loop.index }}</div>
-                <div class="doc-content">{{ parts[0].split('. ', 1)|last }}</div>
+                <div class="doc-content doc-content-with-tooltip" title="{{ full_text }}">
+                  {{ full_text }}
+                </div>
                 {% if parts|length > 1 %}
                   <div class="doc-score">{{ parts[1] }}</div>
                 {% endif %}
@@ -740,9 +938,12 @@
           <ul class="document-list">
             {% for line in after.split('\n') %}
               {% set parts = line.split(' | ') %}
+              {% set full_text = parts[0].split('. ', 1)|last %}
               <li class="doc-item">
                 <div class="doc-rank">{{ loop.index }}</div>
-                <div class="doc-content">{{ parts[0].split('. ', 1)|last }}</div>
+                <div class="doc-content doc-content-with-tooltip" title="{{ full_text }}">
+                  {{ full_text }}
+                </div>
                 {% if parts|length > 1 %}
                   <div class="doc-score">{{ parts[1] }}</div>
                 {% endif %}
@@ -798,6 +999,58 @@
       }
     });
 
+    // CARGAR ESTADÍSTICAS DE LA BASE DE DATOS
+    async function loadDatabaseStats() {
+      try {
+        const response = await fetch('/stats');
+        const stats = await response.json();
+        
+        console.log('Database stats:', stats); // Para debug
+        
+        // Actualizar elementos del DOM con TODOS los campos disponibles
+        document.getElementById('totalDocs').textContent = stats.total_documents?.toLocaleString() || '0';
+        document.getElementById('pdfDocs').textContent = stats.pdf_documents?.toLocaleString() || '0';
+        document.getElementById('urlDocs').textContent = stats.url_documents?.toLocaleString() || '0';
+        
+        // Tamaños formateados
+        document.getElementById('storageSize').textContent = formatBytes(stats.storage_size || 0);
+        document.getElementById('indexSize').textContent = formatBytes(stats.total_index_size || 0);
+        document.getElementById('avgSize').textContent = formatBytes(stats.avg_obj_size || 0);
+        
+        // Información de conexión
+        document.getElementById('dbNameText').textContent = stats.database_name || 'Unknown';
+        document.getElementById('collectionName').textContent = stats.collection_name || 'Unknown';
+        document.getElementById('indexName').textContent = stats.index_name || 'Unknown';
+        
+        // Estado online
+        document.getElementById('dbStatus').textContent = 'Online';
+        document.getElementById('dbStatus').className = 'db-status online';
+        
+      } catch (error) {
+        console.error('Error loading database stats:', error);
+        document.getElementById('dbStatus').textContent = 'Offline';
+        document.getElementById('dbStatus').className = 'db-status offline';
+        
+        // Mostrar errores en todos los campos
+        ['totalDocs', 'pdfDocs', 'urlDocs', 'storageSize', 'indexSize', 'avgSize'].forEach(id => {
+          document.getElementById(id).textContent = 'Error';
+        });
+        ['dbNameText', 'collectionName', 'indexName'].forEach(id => {
+          document.getElementById(id).textContent = 'Error';
+        });
+      }
+    }
+
+    // Formatear bytes en formato legible
+    function formatBytes(bytes, decimals = 1) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
     // Format AI answer
     function formatAIAnswer(text) {
       if (!text) return '';
@@ -850,6 +1103,13 @@
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
+      // Cargar estadísticas de la base de datos
+      loadDatabaseStats();
+      
+      // Actualizar estadísticas cada 30 segundos
+      setInterval(loadDatabaseStats, 30000);
+      
+      // Formatear respuesta de AI
       const answerElement = document.getElementById('aiAnswer');
       if (answerElement) {
         const rawAnswer = `{{ answer|safe }}`;
