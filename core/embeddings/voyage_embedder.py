@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from voyageai import Client as VoyageClient
 from config.config import VOYAGE_API_KEY, EMBED_MODEL
 
@@ -18,7 +18,7 @@ class VoyageEmbedder:
             print(f"[EMBED ERROR] {e}")
             return None
     
-    def rerank(self, query: str, documents: List[str], top_k: int) -> List[int]:
+    def rerank(self, query: str, documents: List[str], top_k: int) -> List[Tuple[int,float]]:
         try:
             print(f"[DEBUG] Reranking {len(documents)} documents, requesting top {top_k}")
             response = self.client.rerank(
@@ -27,12 +27,12 @@ class VoyageEmbedder:
                 model="rerank-2",
                 top_k=top_k
             )
-            indices = [r.index for r in response.results]
-            print(f"[DEBUG] Reranking successful, returned {len(indices)} indices")
-            return indices
+            results = [(r.index, r.relevance_score) for r in response.results]
+            print(f"[DEBUG] Reranking successful, returned {len(results)} indices")
+            return results
         except Exception as e:
-            print(f"[RERANK ERROR] {e}")
-            return list(range(min(top_k, len(documents))))
+            fallback_count = min(top_k, len(documents))
+            return [(i, 0.5) for i in range(fallback_count)]
 
 # Instancia global
 voyage_embedder = VoyageEmbedder()

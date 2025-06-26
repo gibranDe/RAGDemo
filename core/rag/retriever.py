@@ -21,7 +21,7 @@ class RAGRetriever:
         docs = self.search_engine.results_to_documents(results)
         
         before = "\n".join(
-            f"{i+1}. {d.metadata['source']} | {d.metadata['score']:.4f}"
+            f"{i+1}. {d.metadata['source']} | {d.metadata['score']:.4f} | _id:{d.metadata['id']}"
             for i, d in enumerate(docs[:10])
         )
         print(f"[INFO] Top 10 documents BEFORE rerank:\n{before or '(no results)'}")
@@ -29,7 +29,7 @@ class RAGRetriever:
         top_docs = self._rerank_documents(query, docs, context_k)
         
         after = "\n".join(
-            f"{i+1}. {d.metadata['source']} | {d.metadata['score']:.4f}"
+            f"{i+1}. {d.metadata['source']} | {d.metadata['rerank_score']:.4f} | _id:{d.metadata['id']}"
             for i, d in enumerate(top_docs[:10])
         )
         print(f"[INFO] Top 10 documents AFTER rerank:\n{after or '(no results)'}")
@@ -41,8 +41,16 @@ class RAGRetriever:
             return []
         
         document_texts = [d.page_content for d in docs]
-        reranked_indices = self.embedder.rerank(query, document_texts, top_k)
-        return [docs[i] for i in reranked_indices]
+        rerank_results = self.embedder.rerank(query, document_texts, top_k)
+        reranked_docs = []
+        
+        for index, relevance_score in rerank_results:
+            doc = docs[index]
+            doc.metadata['rerank_score']= relevance_score
+            doc.metadata['rerank_query'] = query
+            reranked_docs.append(doc)
+        
+        return reranked_docs
 
 # Instancia global
 rag_retriever = RAGRetriever()

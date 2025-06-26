@@ -29,7 +29,7 @@ class VectorSearchEngine:
                 "text": 1,
                 "source": 1,
                 "score": {"$meta": "vectorSearchScore"},
-                "_id": 0
+                "_id": 1
             }
         })
         
@@ -46,6 +46,7 @@ class VectorSearchEngine:
             Document(
                 page_content=r["text"],
                 metadata={
+                    "id": r["_id"],
                     "source": r.get("source", "https://unknown-source"),
                     "score": r["score"]
                 }
