@@ -189,7 +189,6 @@
       color: var(--mongo-forest);
     }
 
-    /* DATABASE STATS - NUEVA SECCIÓN */
     .db-stats {
       margin-top: 2rem;
       padding: 1.5rem;
@@ -424,7 +423,30 @@
       min-width: 60px;
     }
 
-    /* TOOLTIP MEJORADO */
+    .position-indicator {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      margin-left: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .position-indicator.up {
+      background: #22c55e;
+      color: white;
+    }
+
+    .position-indicator.down {
+      background: #ef4444;
+      color: white;
+    }
+
+    .position-indicator.same {
+      background: var(--mongo-gray-dark);
+      color: white;
+    }
+
     .doc-content-with-tooltip {
       position: relative;
       cursor: help;
@@ -488,7 +510,6 @@
       }
     }
 
-    /* INDICADOR VISUAL DE QUE HAY TOOLTIP */
     .doc-content-with-tooltip::after {
       content: ' 🔍';
       font-size: 0.7rem;
@@ -946,6 +967,17 @@
                 </div>
                 {% if parts|length > 1 %}
                   <div class="doc-score">{{ parts[1] }}</div>
+                  {% if parts|length > 2 and parts[2].startswith('was:') %}
+                    {% set original_pos = parts[2].replace('was:', '') %}
+                    {% set current_pos = loop.index %}
+                    {% if original_pos|int > current_pos %}
+                      <div class="position-indicator up">⬆️ was: {{ original_pos }}</div>
+                    {% elif original_pos|int < current_pos %}
+                      <div class="position-indicator down">⬇️ was: {{ original_pos }}</div>
+                    {% else %}
+                      <div class="position-indicator same">➡️ same {{ original_pos }}</div>
+                    {% endif %}
+                  {% endif %}
                 {% endif %}
               </li>
             {% endfor %}

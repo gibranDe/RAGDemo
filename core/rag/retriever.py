@@ -29,7 +29,7 @@ class RAGRetriever:
         top_docs = self._rerank_documents(query, docs, context_k)
         
         after = "\n".join(
-            f"{i+1}. {d.metadata['source']} | {d.metadata['rerank_score']:.4f} | _id:{d.metadata['id']}"
+            f"{i+1}. {d.metadata['source']} | {d.metadata['rerank_score']:.4f} | was:{d.metadata['original_position']} | _id:{d.metadata['id']}"
             for i, d in enumerate(top_docs[:10])
         )
         print(f"[INFO] Top 10 documents AFTER rerank:\n{after or '(no results)'}")
@@ -48,6 +48,7 @@ class RAGRetriever:
             doc = docs[index]
             doc.metadata['rerank_score']= relevance_score
             doc.metadata['rerank_query'] = query
+            doc.metadata['original_position']= index + 1
             reranked_docs.append(doc)
         
         return reranked_docs
